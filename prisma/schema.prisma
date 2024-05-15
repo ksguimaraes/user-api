@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  cpf        String      @unique
+  password   String
+  name       String
+  birthDate  DateTime   @map("birth_date")  @db.Date
+  addressId  String     @map("address_id")
+
+  status     Status      @default(Ativo)
+
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  deletedAt  DateTime?   @map("deleted_at")
+
+  createdByUserId String? @map("created_by_user_id")
+  updatedByUserId String? @map("updated_by_user_id")
+  deletedByUserId String? @map("deleted_by_user_id")
+
+  UserCreatedByUser User[] @relation("UserCreatedByUser")
+  UserUpdatedByUser User[] @relation("UserUpdatedByUser")
+  UserDeletedByUser User[] @relation("UserDeletedByUser")
+  
+
+  address             Address?    @relation(fields: [addressId], references: [id])
+  createdByUser       User?       @relation("UserCreatedByUser", fields: [createdByUserId], references: [id])
+  updatedByUser       User?       @relation("UserUpdatedByUser", fields: [updatedByUserId], references: [id])
+  deletedByUser       User?       @relation("UserDeletedByUser", fields: [deletedByUserId], references: [id])
+
+  @@index([cpf], name: "cpf")
+  @@map("users")
+}
+
+enum Status {
+  Ativo
+  Inativo
+}
+
+model Address {
+  id            String   @id @default(uuid())
+  street        String
+  number        Int
+  complement    String?
+  neighborhood  String
+  city          String
+  state         String
+  zipCode       String    @map("zip_code")
+
+  User          User[]
+
+  @@map("addresses")
+}
