@@ -26,6 +26,6 @@ export const errorHandle: FastifyErrorHandler = (error, rquest, reply) => {
     }
 
     reply.code(500).send({
-        message: 'Internal server error',
+        message: 'Internal server error: ' + error.message,
     });
 }

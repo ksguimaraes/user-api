@@ -1,8 +1,9 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { AuthController } from "../controllers/authController";
 
-const authController = require('../controllers/authController');
+const authController = new AuthController();
 
 export async function authRoutes(app: FastifyInstance) {
     app
@@ -21,5 +22,5 @@ export async function authRoutes(app: FastifyInstance) {
                 }),
             }
         }
-    }, authController.login);
+    }, authController.login)
 }

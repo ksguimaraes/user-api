@@ -5,6 +5,7 @@ import fastify from "fastify";
 import { validatorCompiler, serializerCompiler, jsonSchemaTransform, ZodTypeProvider } from "fastify-type-provider-zod";
 import { userRoutes } from "./routes/userRoutes";
 import { authRoutes } from "./routes/authRoutes";
+import { errorHandle } from "./utils/errorHandler";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -25,7 +26,8 @@ app.register(fastifySwagger, {
             Bearer: {
                 type: 'apiKey',
                 name: 'Authorization',
-                in: 'header'
+                in: 'header',
+                description: 'Authorization header token, sample: Bearer #token#'
             }
         },
         security: [
@@ -44,6 +46,8 @@ app.setSerializerCompiler(serializerCompiler);
 
 app.register(userRoutes)
 app.register(authRoutes)
+
+app.setErrorHandler(errorHandle)
 
 app.listen({ port: 3333 }).then(() => {
     console.log('HTTP server running!')

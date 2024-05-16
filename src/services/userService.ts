@@ -1,73 +1,51 @@
+import { User } from "@prisma/client";
 import { BadRequest } from "../_errors/badRequest";
 import { NotFound } from "../_errors/notFound";
 import { userCreateRequestDto } from "../dtos/userCreateRequestDto";
-import { 
-    createUser as createUserRepository, 
-    findUserByCpf as findUserByCpfRepository,
-    findUserById as findUserByIdRepository,
-    updateUser as updateUserRepository,
-    deleteUser as deleteUserRepository
-} from "../repositories/userRepository";
+import { UserRepository } from "../repositories/userRepository";
 
+const userRepository = new UserRepository();
+export class UserService {
 
-export const createUser = async (data: userCreateRequestDto) => {
-    try {
-        const userExists = await findUserByCpfRepository(data.cpf);
+    async createUser(data: userCreateRequestDto, createdByUserId?: string): Promise<User> {
+        const userExists = await this.findUserByCpf(data.cpf);
         if(userExists !== null) {
             throw new BadRequest('User already exists.');
         }
-        const user = await createUserRepository(data);
+        const user = await userRepository.createUser(data, createdByUserId);
         return user;
-    } catch (error) {
-        throw new Error(error.message);
     }
-}
 
-export const getUserById = async (id: string) => {
-    try {
-        const user = await findUserByIdRepository(id);
+    async getUserById(id: string) {
+        const user = await userRepository.findUserById(id);
         if(user === null) {
             throw new NotFound('User not found.');
         }
         return user;
-    } catch (error) {
-        throw new Error(error.message);
     }
-}
 
-export const updateUser = async (id: string, data: userCreateRequestDto) => {
-    try {
-        const user = await findUserByIdRepository(id);
+    async updateUser(id: string, data: userCreateRequestDto, updatedByUserId?: string) {
+        const user = await userRepository.findUserById(id);
         if(user === null) {
             throw new NotFound('User not found.');
         }
-        const updatedUser = await updateUserRepository(id, data);
+        const updatedUser = await userRepository.updateUser(id, data, updatedByUserId);
         return updatedUser;
-    } catch (error) {
-        throw new Error(error.message);
     }
-}
 
-export const deleteUser = async (id: string) => {
-    try {
-        const user = await findUserByIdRepository(id);
+    async deleteUser(id: string, deletedByUserId?: string) {
+        const user = await userRepository.findUserById(id);
         if(user === null) {
-            throw new Error('User not found.');
+            throw new NotFound('User not found.');
         }
-        await deleteUserRepository(id);
-    } catch (error) {
-        throw new Error(error.message);
+        await userRepository.deleteUser(id, deletedByUserId);
     }
-}
 
-export const findUserByCpf = async (cpf: string) => {
-    try {
-        const user = await findUserByCpfRepository(cpf);
+    async findUserByCpf(cpf: string) {
+        const user = await userRepository.findUserByCpf(cpf);
         if(user === null) {
             throw new NotFound('User not found.');
         }
         return user;
-    } catch (error) {
-        throw new Error(error.message);
     }
 }

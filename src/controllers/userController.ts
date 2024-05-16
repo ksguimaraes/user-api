@@ -1,35 +1,35 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { userCreateRequestDto } from '../dtos/userCreateRequestDto';
-import { 
-    createUser as createUserService,
-    getUserById as getUserByIdService,
-    updateUser as updateUserService,
-    deleteUser as deleteUserService
-} from '../services/userService';
+import { UserService } from '../services/userService';
 
-export const createUser = async (request: FastifyRequest, reply: FastifyReply) => {
-    let data: userCreateRequestDto;
-    data = request.body as userCreateRequestDto;
-    const user = await createUserService(data);
-    reply.code(201).send({ userId: user.id });
-}
+const userService = new UserService();
 
-export const getUserById = async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id } = request.params;
-    const user = await getUserByIdService(id);
-    reply.code(200).send(user);
-}
+export class UserController {
 
-export const updateUser = async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id } = request.params;
-    let data: userCreateRequestDto;
-    data = request.body as userCreateRequestDto;
-    const user = await updateUserService(id, data);
-    reply.code(200).send(user);
-}
+    async createUser(request: FastifyRequest, reply: FastifyReply) {
+        let data: userCreateRequestDto;
+        data = request.body as userCreateRequestDto;
+        const user = await userService.createUser(data, request.user.userId);
+        reply.code(201).send({ userId: user.id });
+    }
 
-export const deleteUser = async (request: FastifyRequest, reply: FastifyReply) => {
-    const { id } = request.params;
-    await deleteUserService(id);
-    reply.code(204).send();
+    async getUserById(request: FastifyRequest, reply: FastifyReply) {
+        const { id }: { id: string } = request.params;
+        const user = await userService.getUserById(id);
+        reply.code(200).send(user);
+    }
+
+    async updateUser(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params;
+        let data: userCreateRequestDto;
+        data = request.body as userCreateRequestDto;
+        const user = await userService.updateUser(id, data, request.user.userId);
+        reply.code(200).send(user);
+    }
+
+    async deleteUser(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params;
+        await userService.deleteUser(id, request.user.userId);
+        reply.code(204).send();
+    }
 }

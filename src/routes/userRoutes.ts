@@ -3,8 +3,9 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { UserCreateSchema, UserUpdateSchema } from "../dtos/userShema";
 import { registerAuthMiddleware } from "../middlewares/authMiddleware";
+import { UserController } from "../controllers/userController";
 
-const userController = require('../controllers/userController');
+const userController = new UserController();
 
 export async function userRoutes(app: FastifyInstance) {
     registerAuthMiddleware(app);

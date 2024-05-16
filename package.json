@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
@@ -16,8 +18,11 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.12.12",
     "prisma": "^5.14.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
     "tsx": "^4.10.2"
   },
   "dependencies": {
