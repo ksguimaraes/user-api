@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { userCreateRequestDto } from '../dtos/userCreateRequestDto';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { UserCreateRequestDto } from '../dtos/userCreateRequestDto';
+import { UserUpdateRequestDto } from '../dtos/userUpdateRequestDto';
 import bcrypt from 'bcryptjs';
 import { AddressRepository } from './addressRepository';
 import { NotFound } from '../_errors/notFound';
@@ -9,14 +10,14 @@ const prisma = new PrismaClient();
 export class UserRepository {
     addressRepository = new AddressRepository();
 
-    async createUser(data: userCreateRequestDto, createdByUserId?: string) {
+    async createUser(data: UserCreateRequestDto, createdByUserId?: string) {
         const address = await this.addressRepository.createAddress(data.address);
-        data.password = await bcrypt.hash(data.password, 10);
+        const passwordHash = await bcrypt.hash(data.password, 10);
 
         const user = await prisma.user.create({
             data: {
                 cpf: data.cpf,
-                password: data.password,
+                password: passwordHash,
                 name: data.name,
                 birthDate: data.birthDate,
                 status: data.status,
@@ -62,30 +63,32 @@ export class UserRepository {
 
         return user;
     }
-
-    async updateUser(userId: string, data: userCreateRequestDto, updatedByUserId?: string) {
+    
+    async updateUser(userId: string, data: UserUpdateRequestDto, updatedByUserId?: string) {
         const userExists = await this.findUserById(userId);
         if (!userExists) {
             throw new NotFound('User not found');
         }
-        let newData: Partial<userCreateRequestDto> = { ...data };
+        const updateData: Prisma.UserUpdateInput = {
+            ...data,
+            updatedAt: new Date(),
+            updatedByUser: updatedByUserId !== undefined ? { connect: { id: updatedByUserId } } : undefined,
+            address: data.address !== undefined ? { update: data.address } : undefined
+
+        };
 
         if(data.address && userExists?.address) {
             await this.addressRepository.updateAddress(userExists?.address.id, data.address);
-            delete newData.address;
+            delete updateData.address
         }
         if(data.password) {
-            newData.password = await bcrypt.hash(data.password, 10);
+            updateData.password = await bcrypt.hash(data.password, 10);
         }
         const user = await prisma.user.update({
             where: {
                 id: userId
             },
-            data: {
-                ...newData,
-                updatedAt: new Date(),
-                updatedByUserId
-            }
+            data: updateData
         })
 
         return user;

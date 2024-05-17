@@ -1,7 +1,7 @@
 import { AddressCreateRequestDto } from './addressCreateRequestDto';
 import { Status } from '../enums/statusEnum';
 
-export interface userCreateRequestDto {
+export interface UserCreateRequestDto {
     cpf: string;
     password: string;
     name: string;

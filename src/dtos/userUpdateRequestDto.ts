@@ -1,11 +1,11 @@
-import { AddressCreateRequestDto } from './addressCreateRequestDto';
+import { AddressUpdateRequestDto } from './addressUpdateRequestDto'; 
 import { Status } from '../enums/statusEnum';
 
-export interface userCreateRequestDto {
+export interface UserUpdateRequestDto {
     cpf?: string;
     password?: string;
     name?: string;
     birthDate?: Date;
     status?: Status;
-    address?: AddressCreateRequestDto;
+    address?: AddressUpdateRequestDto;
 }
