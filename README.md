@@ -15,7 +15,7 @@
 
 ## Introdução
 
-Este projeto foi desenvolvido como parte de um teste técnico, utilizando os padrões de projeto Restful para a criação de APIs e JWT para garantir a autenticação e autorização segura dos usuários. A camada de persistência dos dados é implementada com o banco de dados relacional MySQL, executado em um contêiner Docker.
+Este projeto foi desenvolvido como parte de um teste técnico, utilizando os padrões de projeto Restful para a criação de APIs e JWT para garantir a autenticação e autorização segura dos usuários. A camada de persistência dos dados foi implementada com o banco de dados relacional MySQL, executado em um contêiner Docker.
 
 ## Montando o Docker do Banco
 
