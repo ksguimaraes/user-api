@@ -92,6 +92,7 @@ Para executar os testes, utilize o comando:
 ```sh
 npm run test
 ```
+![image](https://github.com/ksguimaraes/user-api/assets/39937365/3f9ea556-c507-486c-b673-c08514c5b8f9)
 
 ## Endpoints Principais
 
