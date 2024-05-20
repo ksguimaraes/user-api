@@ -1,6 +1,5 @@
 # User API - Desafio Backend
 
-## Sumário
 
 1. [Introdução](#introdução)
 2. [Montando o Docker do Banco](#montando-o-docker-do-banco)
